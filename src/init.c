@@ -18,19 +18,26 @@
 
 
 
-int initSocket(char *ifName, int promMode)
+int initSocket(char *ifName, int ipOnly, int promMode)
 {
 
 	int soc;
 	struct ifreq ifrq;
 	struct sockaddr_ll ifAddr;
 	struct packet_mreq mreq;
-	
-	if ((soc = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL))) < 0 ) {
+
+
+	if (ipOnly) {
+		soc = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_IP));
+	}else {
+		soc = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+	}
+
+	if (soc < 0) {
 		perror("socket");
 		return -1;
 	}
-
+	
 	memset(&ifrq, 0, sizeof(struct ifreq));
 	
 	strncpy((char *)ifrq.ifr_name, ifName, sizeof(ifrq.ifr_name));
@@ -45,7 +52,12 @@ int initSocket(char *ifName, int promMode)
 
 	ifAddr.sll_ifindex = ifrq.ifr_ifindex;
 	ifAddr.sll_family = PF_PACKET;
-	ifAddr.sll_protocol = htons(ETH_P_ALL);
+
+	if (ipOnly) {
+		ifAddr.sll_protocol = htons(ETH_P_IP);
+	} else {
+		ifAddr.sll_protocol = htons(ETH_P_ALL);
+	}
 
 	if (bind(soc, (struct sockaddr *)&ifAddr, sizeof(struct sockaddr_ll)) < 0) {
 		perror("bind");

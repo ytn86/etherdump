@@ -6,5 +6,5 @@
 #define TCPDUMP_MAGIC 0xa1b2c3d4
 
 
-int initSocket(char *ifName, int promMode);
+int initSocket(char *ifName, int ipOnly, int promMode);
 void initPcapFile(int fd);

@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 	
 	fprintf(stderr, "%s\n", args.args[0]);
 	
-	if ((soc = initSocket(args.args[0], args.promiscous)) < 0) {
+	if ((soc = initSocket(args.args[0], args.ipOnly, args.promiscous)) < 0) {
 		return -1;
 	}
 
