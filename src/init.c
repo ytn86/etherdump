@@ -23,8 +23,8 @@ int initSocket(char *ifName, int ipOnly, int promMode)
 
 	int soc;
 	struct ifreq ifrq;
-	struct sockaddr_ll ifAddr;
-	struct packet_mreq mreq;
+	struct sockaddr_ll sa;
+       	struct packet_mreq mreq;
 
 
 	if (ipOnly) {
@@ -50,16 +50,16 @@ int initSocket(char *ifName, int ipOnly, int promMode)
 	}
 	
 
-	ifAddr.sll_ifindex = ifrq.ifr_ifindex;
-	ifAddr.sll_family = PF_PACKET;
+	sa.sll_ifindex = ifrq.ifr_ifindex;
+	sa.sll_family = PF_PACKET;
 
 	if (ipOnly) {
-		ifAddr.sll_protocol = htons(ETH_P_IP);
+		sa.sll_protocol = htons(ETH_P_IP);
 	} else {
-		ifAddr.sll_protocol = htons(ETH_P_ALL);
+		sa.sll_protocol = htons(ETH_P_ALL);
 	}
 
-	if (bind(soc, (struct sockaddr *)&ifAddr, sizeof(struct sockaddr_ll)) < 0) {
+	if (bind(soc, (struct sockaddr *)&sa, sizeof(struct sockaddr_ll)) < 0) {
 		perror("bind");
 		close(soc);
 		return -1;
@@ -68,7 +68,7 @@ int initSocket(char *ifName, int ipOnly, int promMode)
 
 	  //For promiscous mode
 	if (promMode) {
-		if (ioctl (soc, SIOCGIFINDEX, &ifrq) < 0) {
+		if (ioctl (soc, SIOCGIFFLAGS, &ifrq) < 0) {
 			perror("ioctl");
 			close(soc);
 			return -1;
