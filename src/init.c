@@ -66,7 +66,7 @@ int initSocket(char *ifName, int ipOnly, int promMode)
 	}
 	
 
-	  //For promiscous mode
+	  //For promiscuous mode
 	if (promMode) {
 		if (ioctl (soc, SIOCGIFFLAGS, &ifrq) < 0) {
 			perror("ioctl");
